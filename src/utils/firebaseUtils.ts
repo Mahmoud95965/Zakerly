@@ -136,33 +136,54 @@ export const updateToolRating = async (toolId: string, newRating: number) => {
 };
 
 export const initializeDefaultTools = async () => {
-  const batch = writeBatch(db);
-  const toolsRef = collection(db, 'tools');
-  
-  // Check if tools already exist
-  const snapshot = await getDocs(toolsRef);
-  if (!snapshot.empty) {
-    console.log('Tools already initialized');
-    return;
-  }
-  
-  // Initialize default tools
-  for (const tool of defaultTools) {
-    const newToolRef = doc(toolsRef);
-    batch.set(newToolRef, {
-      ...tool,
-      status: 'approved',
-      submittedAt: Timestamp.now(),
-      rating: 0,
-      reviewCount: 0,
-      isNew: true,
-      isFeatured: false,
-      isPopular: false
+  try {
+    // First, check if we've already initialized
+    const toolsRef = collection(db, 'tools');
+    const initFlagRef = doc(db, 'system', 'initFlag');
+    const initFlagDoc = await getDoc(initFlagRef);
+
+    if (initFlagDoc.exists()) {
+      console.log('Tools were already initialized');
+      return;
+    }
+
+    // Get existing tools to prevent duplicates
+    const snapshot = await getDocs(toolsRef);
+    if (!snapshot.empty) {
+      console.log('Tools collection is not empty, skipping initialization');
+      await setDoc(initFlagRef, { initialized: true, timestamp: Timestamp.now() });
+      return;
+    }
+
+    // Initialize default tools
+    const batch = writeBatch(db);
+    
+    for (const tool of defaultTools) {
+      const newToolRef = doc(toolsRef);
+      batch.set(newToolRef, {
+        ...tool,
+        status: 'approved',
+        submittedAt: Timestamp.now(),
+        rating: 0,
+        reviewCount: 0,
+        isNew: true,
+        isFeatured: false,
+        isPopular: false
+      });
+    }
+
+    // Set the initialization flag
+    batch.set(initFlagRef, {
+      initialized: true,
+      timestamp: Timestamp.now()
     });
+
+    await batch.commit();
+    console.log('Default tools initialized successfully');
+  } catch (error) {
+    console.error('Error initializing tools:', error);
+    throw new Error('Failed to initialize tools');
   }
-  
-  await batch.commit();
-  console.log('Default tools initialized');
 };
 
 // Contact Message functions

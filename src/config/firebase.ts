@@ -13,10 +13,26 @@ const firebaseConfig = {
   measurementId: "G-TVZZCE0TF2"
 };
 
+// Add allowed domains for authentication
+const allowedDomains = [
+  'localhost',
+  'toolversea.netlify.app',
+  'zakerly0.firebaseapp.com'
+];
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 export const analytics = getAnalytics(app);
+
+// Configure allowed domains for authentication
+allowedDomains.forEach(domain => {
+  auth.useDeviceLanguage();
+  googleProvider.setCustomParameters({
+    'prompt': 'select_account',
+    'hd': domain
+  });
+});
 
 export default app;
