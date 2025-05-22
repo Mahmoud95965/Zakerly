@@ -1,4 +1,21 @@
 {
+  "auth": {
+    "profile": {
+      "title": "Profile",
+      "name": "Name",
+      "email": "Email",
+      "verified": "Verified",
+      "notVerified": "Not Verified",
+      "verifyEmail": "Verify Email",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "uploadPhoto": "Upload Photo",
+      "successUpdate": "Profile updated successfully",
+      "failureUpdate": "Failed to update profile",
+      "verificationSent": "Verification email sent",
+      "verificationError": "Error sending verification email"
+    }
+  },
   "common": {
     "search": "Search",
     "categories": "Categories",

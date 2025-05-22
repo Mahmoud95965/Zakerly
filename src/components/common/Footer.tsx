@@ -17,12 +17,14 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8 xl:col-span-1">
-            <div className="flex items-center">
-              <BookOpen className="h-8 w-8 text-indigo-400 dark:text-indigo-300" />
-              <span className="mx-2 text-xl font-bold">زاكرلي</span>
-            </div>
+            <Link to="/" className="inline-flex items-center group relative">
+              <div className="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 rounded-xl shadow-lg">
+                <BookOpen className="h-6 w-6 sm:h-7 sm:w-7 text-white transform group-hover:scale-110 transition-all duration-200" />
+              </div>
+              <span className="mx-3 text-lg sm:text-xl font-bold text-white dark:text-white group-hover:text-indigo-300 transition-colors duration-200">زاكرلي</span>
+            </Link>
             <div className="space-y-4">
-              <p className="text-gray-300 text-base leading-6">
+              <p className="text-gray-300 dark:text-gray-400 text-base leading-6">
                 {t('footer.about')}
               </p>
               <div className="flex items-start space-x-6 space-x-reverse">

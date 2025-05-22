@@ -4,11 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { Tool } from '../../types';
 import ToolCard from '../tools/ToolCard';
 import { ChevronLeft } from 'lucide-react';
+import { useTools } from '../../hooks/useTools';
+
+type ToolType = 'featured' | 'new' | 'popular' | 'all';
 
 interface FeaturedToolsProps {
   title: string;
   subtitle?: string;
-  tools: Tool[];
+  toolType: ToolType;
   viewAllLink?: string;
   className?: string;
 }
@@ -16,11 +19,46 @@ interface FeaturedToolsProps {
 const FeaturedTools: React.FC<FeaturedToolsProps> = ({
   title,
   subtitle,
-  tools,
+  toolType,
   viewAllLink,
   className = ''
 }) => {
   const { t } = useTranslation();
+  const { tools, loading, error } = useTools(toolType);
+  
+  if (loading) {
+    return (
+      <section className={`py-12 ${className} dark:bg-gray-900/50 backdrop-blur-sm transition-colors`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
+            {subtitle && <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-8"></div>}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-gray-200 dark:bg-gray-700 rounded-lg h-64"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className={`py-12 ${className} dark:bg-gray-900/50 backdrop-blur-sm transition-colors`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center text-red-600 dark:text-red-400">
+            {t('errors.failedToLoadTools')}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!tools.length) {
+    return null;
+  }
   
   return (
     <section className={`py-12 ${className} dark:bg-gray-900/50 backdrop-blur-sm transition-colors`}>
